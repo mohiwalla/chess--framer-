@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import isLegalMove from "@/lib/legal-moves"
 import { DroppableSquare } from "./droppable-square"
 import { makeMove } from "@/lib/make-move"
@@ -11,11 +11,13 @@ type ChessBoardProps = {
 }
 
 const startPosFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+// const startPosFEN = "rnbqkbnr/ppppppp1/8/6Pp/8/8/PPPPPPPP/RNBQKBNR w KQkq h6 0 1"
 const imagesBasePath = "/images/pieces/lolz"
 
 export default function ChessBoard({
 	position = startPosFEN,
 }: ChessBoardProps) {
+	// const [previousPositions, setPreviousPositions] = useState<string[]>([])
 	const [FEN, setFEN] = useState(position)
 	const [highlightedSquares, setHighlightedSquares] = useState<
 		(string | boolean)[]
@@ -27,12 +29,16 @@ export default function ChessBoard({
 		if (fromSquare === toSquare) return
 		if (!isLegalMove(FEN, fromSquare, toSquare)) return
 
-		const newFEN = makeMove({
+		let newFEN = makeMove({
 			fromSquare,
 			toSquare,
 			FEN,
 			setFEN,
+			setHighlightedSquares,
 		})
+
+		// setPreviousPositions((prev) => [...prev, newFEN])
+		// await new Promise((resolve) => setTimeout(resolve, 2e3))
 
 		const req = await fetch("/api/stockfish/best-move", {
 			method: "post",
@@ -49,14 +55,32 @@ export default function ChessBoard({
 
 		const res = await req.json()
 		const computerMove = res.bestMove as string
+		// setPreviousPositions((prev) => [...prev, newFEN])
 
-		makeMove({
+		newFEN = makeMove({
 			fromSquare: computerMove.substring(0, 2),
 			toSquare: computerMove.substring(2, 4),
 			FEN: newFEN,
 			setFEN,
+			setHighlightedSquares,
 		})
 	}
+
+	useEffect(() => {
+		window.addEventListener("keydown", showPreviousPositions)
+
+		function showPreviousPositions(e: KeyboardEvent) {
+			if (e.key == "ArrowRight") {
+				console.log("next")
+			} else if (e.key == "ArrowLeft") {
+				console.log("prev")
+			}
+		}
+
+		return () => {
+			window.removeEventListener("keydown", showPreviousPositions)
+		}
+	}, [])
 
 	return (
 		<AnimatePresence>

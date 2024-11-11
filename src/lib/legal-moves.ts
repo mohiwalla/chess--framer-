@@ -1,7 +1,6 @@
 import {
 	convertFENToBoard,
 	coordinateToSquareName,
-	getEnPassentSquare,
 	squareNameToCoordinates,
 } from "./utils"
 
@@ -38,17 +37,7 @@ export default function isLegalMove(
 		return false
 	}
 
-    return true
 	let isLegalMove = false
-
-	// console.log(
-	// 	isLegalPawnMove({
-	// 		fromSquare,
-	// 		toSquare,
-	// 		position,
-	// 		turn,
-	// 	})
-	// )
 
 	const pieceName = pieceMoved.toLowerCase()
 	switch (pieceName) {
@@ -57,9 +46,12 @@ export default function isLegalMove(
 				turn,
 				fromSquare,
 				toSquare,
-				position,
 				pieceOnDestination,
+				enPassentSquare,
 			})
+			break
+		default:
+			isLegalMove = true
 			break
 	}
 
@@ -74,14 +66,14 @@ function isLegalPawnMove({
 	turn,
 	fromSquare,
 	toSquare,
-	position,
 	pieceOnDestination,
+	enPassentSquare,
 }: {
 	turn: string
 	fromSquare: string
 	toSquare: string
-	position: string
 	pieceOnDestination: string
+	enPassentSquare: string
 }) {
 	const [startX, startY] = squareNameToCoordinates(fromSquare)
 	const [endX, endY] = squareNameToCoordinates(toSquare)
@@ -91,8 +83,6 @@ function isLegalPawnMove({
 	const captureSqaures = pawnCapturePossibleOnSquares({
 		turn,
 		fromSquare,
-		toSquare,
-		position,
 		pieceOnDestination,
 	})
 
@@ -108,8 +98,7 @@ function isLegalPawnMove({
 		} else if (squaresTravelled != 1) {
 			return false
 		}
-	} else if (!captureSqaures.includes(toSquare)) {
-		console.log(captureSqaures)
+	} else if (![...captureSqaures, enPassentSquare].includes(toSquare)) {
 		return false
 	}
 
@@ -119,14 +108,10 @@ function isLegalPawnMove({
 function pawnCapturePossibleOnSquares({
 	turn,
 	fromSquare,
-	toSquare,
-	position,
 	pieceOnDestination,
 }: {
 	turn: string
 	fromSquare: string
-	toSquare: string
-	position: string
 	pieceOnDestination: string
 }) {
 	const captureSqaures = []
@@ -142,8 +127,5 @@ function pawnCapturePossibleOnSquares({
 		}
 	}
 
-	return [
-		...captureSqaures,
-		getEnPassentSquare({ fromSquare, toSquare, position }),
-	]
+	return captureSqaures
 }

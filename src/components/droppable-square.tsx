@@ -34,7 +34,7 @@ export function DroppableSquare({
 				e.preventDefault()
 
 				const newHighlightedSquares = [...highlightedSquares]
-				newHighlightedSquares[index] = newHighlightedSquares[index] ? false : "#f7462fce"
+				newHighlightedSquares[index] = newHighlightedSquares[index] ? false : "#f04337cc"
 
 				setHighlightedSquares(newHighlightedSquares)
 			}}

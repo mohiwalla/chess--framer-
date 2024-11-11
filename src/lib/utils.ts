@@ -70,19 +70,14 @@ export function convertBoardToFEN(board: string[][]): string {
 export function getEnPassentSquare({
 	fromSquare,
 	toSquare,
-	position
 }: {
 	fromSquare: string
 	toSquare: string
-	position: string
 }) {
 	const [, fromY] = squareNameToCoordinates(fromSquare)
 	const [toX, toY] = squareNameToCoordinates(toSquare)
 
-	const board = convertFENToBoard(position)
-	const pieceOnDestination = board[toY][toX]
-
-	if (Math.abs(fromY - toY) === 2 && pieceOnDestination === "") {
+	if (Math.abs(fromY - toY) === 2) {
 		return coordinateToSquareName(toX, (fromY + toY) / 2)
 	}
 

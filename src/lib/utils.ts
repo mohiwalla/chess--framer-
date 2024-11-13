@@ -83,3 +83,8 @@ export function getEnPassentSquare({
 
 	return "-"
 }
+
+export function pieceOnSquare(board: string[][], squareName: string) {
+	const [x, y] = squareNameToCoordinates(squareName)
+	return board[y][x]
+}

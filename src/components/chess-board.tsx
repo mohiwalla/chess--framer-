@@ -12,6 +12,7 @@ type ChessBoardProps = {
 
 const startPosFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 // const startPosFEN = "rnbqkbnr/ppppppp1/8/6Pp/8/8/PPPPPPPP/RNBQKBNR w KQkq h6 0 1"
+// const startPosFEN = "r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1"
 const imagesBasePath = "/images/pieces/lolz"
 
 export default function ChessBoard({
